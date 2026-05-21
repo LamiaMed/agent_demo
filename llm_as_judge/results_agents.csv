@@ -1,0 +1,62 @@
+﻿id;question;type;expected_answer;agent_answer;relevance;faithfulness;coherence;overall;average_score;rationale
+1;Quels documents faut-il apporter pour la pré-admission ?;in_corpus;Carte vitale, pièce d’identité, carte de mutuelle, documents d’admission signés, attestation de prise en charge et livret de famille pour un enfant.;"Pour la pré-admission, il faut apporter :
+
+- votre carte Vitale
+- votre pièce d’identité
+- vos documents d’admission intégralement remplis et signés
+- votre déclaration de Maladie Professionnelle ou d’Accident du Travail, le cas échéant
+- votre carte de mutuelle complémentaire santé
+- votre attestation de prise en charge de votre séjour fournie par votre mutuelle
+
+Si vous voulez, je peux aussi vous préciser **où et quand faire la pré-admission**.";5;4;5;4;4.67;La réponse est pertinente et bien structurée, mais elle inclut un document supplémentaire (déclaration de Maladie Professionnelle ou d’Accident du Travail) qui n'est pas mentionné dans la réponse attendue.
+2;Quels papiers dois-je préparer avant la pré-admission ?;reformulation;Même réponse que la question 1, reformulée.;"Avant la pré-admission, préparez :
+
+- votre carte Vitale
+- votre pièce d’identité
+- vos documents d’admission remplis et signés
+- votre déclaration de Maladie Professionnelle ou d’Accident du Travail, si concerné
+- votre carte de mutuelle complémentaire santé
+- votre attestation de prise en charge de votre séjour fournie par votre mutuelle
+
+Si vous voulez, je peux aussi vous dire **quand et où faire la pré-admission**.";5;5;5;5;5.00;La réponse de l'agent est pertinente, fidèle aux documents demandés et bien structurée, répondant clairement à la question sur les papiers à préparer avant la pré-admission.
+3;À quel moment faut-il effectuer la pré-admission ?;in_corpus;Dès que possible après la confirmation du séjour, et impérativement le jour de la consultation d’anesthésie.;La pré-admission doit être effectuée dès que possible après la confirmation de votre séjour, et impérativement le jour de votre consultation d’anesthésie.;5;5;5;5;5.00;La réponse de l'agent est pertinente, fidèle à la réponse attendue et clairement formulée.
+4;Où se fait la pré-admission ?;reformulation;Au bureau des pré-admissions situé à l’accueil de la Clinique Générale d’Annecy.;La pré-admission se fait au bureau des pré-admissions, situé à l’accueil de la Clinique Générale d’Annecy.;5;5;5;5;5.00;La réponse de l'agent est pertinente, fidèle à la question posée et clairement formulée, sans contradictions.
+5;Quel est le but de la consultation pré-anesthésique ?;in_corpus;Elle sert à évaluer les risques anesthésiques, revoir les antécédents et traitements, et expliquer les techniques d’anesthésie envisagées.;"Le but de la consultation pré-anesthésique est de :
+
+- évaluer les risques anesthésiques selon vos antécédents et traitements
+- vous informer sur les techniques anesthésiques envisagées
+- faire un bilan de santé et repérer d’éventuelles interactions avec l’anesthésie
+- discuter du mode d’anesthésie le plus adapté à votre état de santé et à l’intervention
+
+Si vous voulez, je peux aussi vous dire **quels documents apporter à cette consultation**.";5;5;5;5;5.00;La réponse de l'agent est pertinente, fidèle aux attentes et bien structurée, abordant tous les aspects de la consultation pré-anesthésique.
+6;Que trouve-t-on au niveau 0 de l’établissement ?;in_corpus_detailed;Accueil, admissions, PMSI, bureau des usagers et associations, assistante sociale, radiologie, scanner, doppler, SNP1 et secrétariats médicaux.;"Au niveau 0, on trouve :
+
+- la Maison Laennec
+- le laboratoire
+- les consultations médicales d’anesthésie, vasculaire et orthopédie
+- à côté de la pharmacie : les consultations ORL et urologie
+- l’ascenseur
+- l’entrée IRM
+
+Si vous voulez, je peux aussi vous résumer ce qu’il y a aux autres niveaux.";2;2;3;2;2.33;La réponse de l'agent mentionne des éléments présents au niveau 0, mais ne correspond pas à la liste attendue. De plus, la structure est un peu désordonnée, ce qui nuit à la clarté.
+7;Quelles spécialités sont présentes au niveau 3 ?;in_corpus;VISCERAL / THORACIQUE, urologie, gynécologie, hépato-gastro-entérologie et chirurgie réparatrice / esthétique.;"Au niveau 3, on trouve les spécialités suivantes :
+
+- viscéral / thoracique
+- urologie / gynécologie
+- hépato-gastro-entérologie
+- chirurgie réparatrice / esthétique
+
+On y trouve aussi les secteurs 31, 32, 34 et 35, ainsi qu’un salon d’attente côté U.32 et un Centre de l’Obésité en unité 12.";5;5;5;5;5.00;La réponse de l'agent est pertinente, fidèle aux informations demandées et bien structurée. Elle fournit les spécialités au niveau 3 comme attendu, sans contradictions.
+8;Quelle est la capitale du Japon ?;out_of_corpus;Je n’ai pas cette information dans les documents.;La capitale du Japon est Tokyo.;1;1;2;1;1.33;La réponse de l'agent ne respecte pas le type de question 'out_of_corpus' et fournit une information qui n'est pas attendue. La clarté est présente, mais la réponse est incorrecte par rapport à la demande.
+9;J’ai un problème avec mon dossier;ambiguous;La demande est trop vague : il faut préciser le problème ou le contexte.;Pouvez-vous préciser votre problème avec le dossier ?;5;5;5;5;5.00;La réponse de l'agent est pertinente, fidèle à la demande et claire, demandant une précision sur le problème avec le dossier.
+10;Parle-moi de la clinique;too_broad;La question est trop large : demander un sujet précis comme l’admission, la sortie, les étages ou les consultations.;"La clinique décrite dans le livret est la Clinique Générale d’Annecy.
+
+Ce qu’on peut en retenir :
+- elle propose un parcours de soins avec consultation chirurgicale, consultation pré-anesthésique, pré-admission, admission, séjour et sortie
+- la pré-admission se fait au bureau des pré-admissions à l’accueil
+- l’admission se fait à l’accueil de l’établissement, niveau 0
+- les spécialités mentionnées incluent notamment la chirurgie viscérale, thoracique, urologie, gynécologie, hépato-gastro-entérologie et chirurgie réparatrice / esthétique
+- le parking est limité : dépose rapide pour les patients à mobilité réduite, avec le parking municipal du château à proximité
+- pendant le séjour, la clinique propose des repas adaptés et différentes prestations de confort
+
+Si vous voulez, je peux aussi vous faire un **résumé plus complet de la clinique** ou vous parler de **son parcours patient**.";2;3;3;2.67;2.67;La réponse de l'agent fournit des informations sur la clinique, mais elle ne répond pas à la demande de précision sur un sujet spécifique. Elle aurait dû demander un sujet précis avant de donner des détails.

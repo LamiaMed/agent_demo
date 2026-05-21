@@ -1,0 +1,11 @@
+id;question;type;expected_answer;score_target
+1;Quels documents faut-il apporter pour la pré-admission ?;in_corpus;"Carte vitale, pièce d’identité, carte de mutuelle, documents d’admission signés, attestation de prise en charge et livret de famille pour un enfant.";{"relevance":5}
+2;Quels papiers dois-je préparer avant la pré-admission ?;reformulation;"Même réponse que la question 1, reformulée.";{"relevance":"4-5"}
+3;À quel moment faut-il effectuer la pré-admission ?;in_corpus;"Dès que possible après la confirmation du séjour, et impérativement le jour de la consultation d’anesthésie.";{"faithfulness":5}
+4;Où se fait la pré-admission ?;reformulation;"Au bureau des pré-admissions situé à l’accueil de la Clinique Générale d’Annecy.";{"relevance":"4-5"}
+5;Quel est le but de la consultation pré-anesthésique ?;in_corpus;"Elle sert à évaluer les risques anesthésiques, revoir les antécédents et traitements, et expliquer les techniques d’anesthésie envisagées.";{"coherence":5}
+6;Que trouve-t-on au niveau 0 de l’établissement ?;in_corpus_detailed;"Accueil, admissions, PMSI, bureau des usagers et associations, assistante sociale, radiologie, scanner, doppler, SNP1 et secrétariats médicaux.";{"relevance":4}
+7;Quelles spécialités sont présentes au niveau 3 ?;in_corpus;"VISCERAL / THORACIQUE, urologie, gynécologie, hépato-gastro-entérologie et chirurgie réparatrice / esthétique.";{"relevance":5}
+8;Quelle est la capitale du Japon ?;out_of_corpus;"Je n’ai pas cette information dans les documents.";{"faithfulness":5}
+9;J’ai un problème avec mon dossier;ambiguous;"La demande est trop vague : il faut préciser le problème ou le contexte.";{"relevance":"3-4"}
+10;Parle-moi de la clinique;too_broad;"La question est trop large : demander un sujet précis comme l’admission, la sortie, les étages ou les consultations.";{"coherence":"3-4"}
