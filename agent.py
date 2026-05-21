@@ -10,7 +10,7 @@ load_dotenv()
 
 agent = create_agent(
     model="openai:gpt-5.4-mini",
-    debug=True,
+    #debug=True,
     tools=[get_client, get_client_with_name, retrieve_context],
     system_prompt=SYSTEM_PROMPT,
 )
