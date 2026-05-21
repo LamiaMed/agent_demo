@@ -1,0 +1,72 @@
+[
+{
+"id": 1,
+"question": "Quels sont les droits RGPD ?",
+"type": "in_corpus",
+"expected_answer": "Liste des 6 droits avec sources",
+"score_target": {"relevance": 5}
+},
+{
+"id": 2,
+"question": "Comment se faire rembourser ?",
+"type": "reformulation",
+"expected_answer": "Même réponse que Q1 mais reformulée",
+"score_target": {"relevance": "4-5"}
+},
+{
+"id": 3,
+"question": "Procédure cookies ?",
+"type": "in_corpus",
+"expected_answer": "Réponse avec référence CNIL",
+"score_target": {"faithfulness": 5}
+},
+{
+"id": 4,
+"question": "Délai de réponse CNIL ?",
+"type": "in_corpus_detailed",
+"expected_answer": "Réponse précise si dans les docs",
+"score_target": {"relevance": 4}
+},
+{
+"id": 5,
+"question": "Obligations du DPO ?",
+"type": "in_corpus",
+"expected_answer": "Réponse structurée avec sources",
+"score_target": {"coherence": 5}
+},
+{
+"id": 6,
+"question": "Capitale du Japon ?",
+"type": "out_of_corpus",
+"expected_answer": "Je n'ai pas cette info",
+"score_target": {"faithfulness": 5}
+},
+{
+"id": 7,
+"question": "Recette gâteau chocolat ?",
+"type": "out_of_corpus",
+"expected_answer": "Hors de mon périmètre",
+"score_target": {"faithfulness": 5}
+},
+{
+"id": 8,
+"question": "J’ai un problème",
+"type": "ambiguous",
+"expected_answer": "Demande de précisions",
+"score_target": {"relevance": "3-4"}
+},
+{
+"id": 9,
+"question": "Tout sur le RGPD ?",
+"type": "too_broad",
+"expected_answer": "Résumé ou demande de préciser",
+"score_target": {"coherence": "3-4"}
+},
+{
+"id": 10,
+"question": "Votre question métier",
+"type": "in_corpus",
+"expected_answer": "Réponse spécifique métier",
+"score_target": {"custom": true}
+}
+]
