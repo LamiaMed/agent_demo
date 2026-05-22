@@ -1,4 +1,5 @@
 import re
+import os
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -13,15 +14,16 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 CREDENTIALS_FILE = BASE_DIR / "credentials.json"
 DEFAULT_TIMEZONE = "UTC"
 
-# Can review scopes here: https://developers.google.com/calendar/api/auth
-# For instance, readonly scope is https://www.googleapis.com/auth/calendar.readonly
-credentials = get_google_credentials(
-    token_file="token.json",
-    scopes=["https://www.googleapis.com/auth/calendar"],
-    client_secrets_file=str(CREDENTIALS_FILE),
-)
 
-api_resource = build_calendar_service(credentials=credentials)
+def _get_calendar_service():
+    # Can review scopes here: https://developers.google.com/calendar/api/auth
+    # For instance, readonly scope is https://www.googleapis.com/auth/calendar.readonly
+    credentials = get_google_credentials(
+        token_file="token.json",
+        scopes=["https://www.googleapis.com/auth/calendar"],
+        client_secrets_file=str(CREDENTIALS_FILE),
+    )
+    return build_calendar_service(credentials=credentials)
 
 
 def _parse_query(query: str) -> dict:
@@ -77,7 +79,13 @@ def _parse_query(query: str) -> dict:
 @tool
 def create_event(query: str) -> str:
     """Create a calendar event from a natural-language query."""
+    if os.environ.get("VERCEL"):
+        raise RuntimeError(
+            "Google Calendar tool is not enabled in the Vercel runtime."
+        )
+
     details = _parse_query(query)
+    api_resource = _get_calendar_service()
     event = api_resource.events().insert(
         calendarId="primary",
         body={
