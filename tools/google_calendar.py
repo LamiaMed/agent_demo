@@ -1,27 +1,13 @@
 import re
-import sys
-import types
 from datetime import datetime, timedelta
 from pathlib import Path
 
 from langchain_core.tools import tool
 
-if "langchain_google_community" not in sys.modules:
-    package_dir = (
-        Path(__file__).resolve().parents[1]
-        / ".venv"
-        / "Lib"
-        / "site-packages"
-        / "langchain_google_community"
-    )
-    package = types.ModuleType("langchain_google_community")
-    package.__path__ = [str(package_dir)]  # type: ignore[attr-defined]
-    sys.modules["langchain_google_community"] = package
-
 from langchain_google_community.calendar.utils import (
-    build_resouce_service as build_resource_service,
-    get_google_credentials,
+    build_calendar_service,
 )
+from langchain_google_community._utils import get_google_credentials
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 CREDENTIALS_FILE = BASE_DIR / "credentials.json"
@@ -35,7 +21,7 @@ credentials = get_google_credentials(
     client_secrets_file=str(CREDENTIALS_FILE),
 )
 
-api_resource = build_resource_service(credentials=credentials)
+api_resource = build_calendar_service(credentials=credentials)
 
 
 def _parse_query(query: str) -> dict:
