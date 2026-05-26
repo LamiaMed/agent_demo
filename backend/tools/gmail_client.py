@@ -1,6 +1,7 @@
 import base64
+import os
 from email.mime.text import MIMEText
-from pathlib import Path
+import tempfile
 
 from googleapiclient.discovery import build
 from langchain_core.tools import tool
@@ -8,9 +9,27 @@ from langchain_google_community._utils import get_google_credentials
 
 from backend.tools.clients import get_client_by_email
 
-BASE_DIR = Path(__file__).resolve().parents[2]
+BASE_DIR = __import__("pathlib").Path(__file__).resolve().parents[2]
 TOKEN_FILE = BASE_DIR / "token.json"
-CREDENTIALS_FILE = BASE_DIR / "credentials.json"
+
+
+def _get_client_secrets_file() -> str:
+    encoded_credentials = os.getenv("GOOGLE_CREDENTIALS_BASE64", "").strip()
+    if not encoded_credentials:
+        raise RuntimeError(
+            "La variable d'environnement GOOGLE_CREDENTIALS_BASE64 n'est pas définie."
+        )
+
+    decoded_credentials = base64.b64decode(encoded_credentials).decode("utf-8")
+
+    with tempfile.NamedTemporaryFile(
+        mode="w",
+        suffix=".json",
+        delete=False,
+        encoding="utf-8",
+    ) as temp_file:
+        temp_file.write(decoded_credentials)
+        return temp_file.name
 
 
 @tool
@@ -30,7 +49,7 @@ def send_confirmation_email(to_email: str, date_rdv: str, heure_rdv: str) -> str
         credentials = get_google_credentials(
             token_file=str(TOKEN_FILE),
             scopes=["https://www.googleapis.com/auth/gmail.send"],
-            client_secrets_file=str(CREDENTIALS_FILE),
+            client_secrets_file=_get_client_secrets_file(),
         )
         if credentials is None:
             return "Erreur : Les autorisations Google ne sont pas initialisées."
