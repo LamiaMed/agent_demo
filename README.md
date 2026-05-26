@@ -4,8 +4,6 @@ google gmail
 
 Si modification, supprimer le fichier : token.json 
 
-<<<<<<< HEAD
-=======
 ## Lancer le backend
 
 Depuis la racine du projet, avec le virtualenv local :
@@ -52,7 +50,6 @@ cd frontend && npm run dev
 
 Si tu veux en faire un vrai script de démarrage plus tard, on pourra créer un `launch.sh` ou un `Makefile`.
 
->>>>>>> 7d5f79e (project)
 
 *** Ex : requete
 "Titre: Consultation Suivi M. Martin ACTE-01, Date: 2026-05-24, Heure: 14h00"
