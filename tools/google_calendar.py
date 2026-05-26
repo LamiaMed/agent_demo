@@ -21,7 +21,8 @@ def _get_calendar_service():
     # For instance, readonly scope is https://www.googleapis.com/auth/calendar.readonly
     credentials = get_google_credentials(
         token_file="token.json",
-        scopes=["https://www.googleapis.com/auth/calendar"],
+        scopes=["https://www.googleapis.com/auth/calendar",
+        "https://www.googleapis.com/auth/gmail.send"],
         client_secrets_file=str(CREDENTIALS_FILE),
     )
     return build_calendar_service(credentials=credentials)

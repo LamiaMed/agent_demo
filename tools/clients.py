@@ -4,6 +4,7 @@ _CLIENTS = {
     "3": {"id": "3", "name": "Claire Bernard", "email": "claire@example.com", "company": "Initech"},
     "4": {"id": "4", "name": "David Lefevre", "email": "david@example.com", "company": "Umbrella"},
     "5": {"id": "5", "name": "Francis Garcia", "email": "francis.garcia81000@gmail.com", "company": "Perso"},
+    "6": {"id": "6", "name": "Lamia MEDJAHED", "email": "lamia.medjahed@example.com", "company": "Perso"},
 }
 
 

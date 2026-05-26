@@ -5,6 +5,7 @@ from googleapiclient.discovery import build
 from langchain_core.tools import tool
 
 import tools.google_calendar as cal
+from langchain_google_community._utils import get_google_credentials
 # On importe la nouvelle fonction dédiée
 from tools.clients import get_client_by_email
 
@@ -25,10 +26,18 @@ def send_confirmation_email(to_email: str, date_rdv: str, heure_rdv: str) -> str
             client_name = "Monsieur/Madame"
 
         # 2. Vérification des autorisations Google
-        if not hasattr(cal, 'credentials') or cal.credentials is None:
-            return "Erreur : Les autorisations Google ne sont pas initialisées."
+        # if not hasattr(cal, 'credentials') or cal.credentials is None:
+        #     return "Erreur : Les autorisations Google ne sont pas initialisées."
             
-        service = build('gmail', 'v1', credentials=cal.credentials)
+        
+        credentials = get_google_credentials(
+            token_file="token.json",
+            scopes=["https://www.googleapis.com/auth/gmail.send"],
+            client_secrets_file="credentials.json",
+        )
+        if credentials is None:
+            return "Erreur : Les autorisations Google ne sont pas initialisÃ©es."
+        service = build('gmail', 'v1', credentials=credentials)
         
         # 3. Personnalisation et structure de l'e-mail
         subject = "Confirmation de votre rendez-vous - Clinique"
