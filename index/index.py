@@ -52,9 +52,24 @@ def load_pdf_file(pdf_path: Path) -> Document:
     return Document(page_content=text, metadata={"source": str(pdf_path)})
 
 
+# ajout txt
+def load_txt_file(txt_path: Path) -> Document:
+    text = txt_path.read_text(encoding="utf-8", errors="ignore")
+    return Document(page_content=text, metadata={"source": str(txt_path)})
+
+
 def load_pdfs_from_data(data_dir: str = "data") -> list[Document]:
     pdf_paths = sorted((BASE_DIR / data_dir).glob("*.pdf"))
-    return [load_pdf_file(pdf_path) for pdf_path in pdf_paths]
+
+    # ajout txt
+    txt_paths = sorted((BASE_DIR / data_dir).glob("*.txt"))
+
+    docs = [load_pdf_file(pdf_path) for pdf_path in pdf_paths]
+
+    # ajout txt
+    docs.extend([load_txt_file(txt_path) for txt_path in txt_paths])
+
+    return docs
 
 
 if __name__ == "__main__":
