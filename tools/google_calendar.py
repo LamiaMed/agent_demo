@@ -1,6 +1,6 @@
 import re
 import os
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 from langchain_core.tools import tool
@@ -28,55 +28,136 @@ def _get_calendar_service():
     return build_calendar_service(credentials=credentials)
 
 
+def _get_reference_date() -> date:
+    """Renvoie la date du jour. 
+    Utile pour l'application et indispensable pour la figer (monkeypatch) pendant les tests.
+    """
+    return date.today()
+
+
+def _resolve_date(query: str, reference_date: date) -> date | None:
+    """Analyse le texte pour trouver une date relative."""
+
+    query = query.lower()
+
+    # Cas simples
+    if "aujourd'hui" in query:
+        return reference_date
+
+    if "demain" in query:
+        return reference_date + timedelta(days=1)
+
+    # Mapping des jours FR -> weekday Python
+    weekdays = {
+        "lundi": 0,
+        "mardi": 1,
+        "mercredi": 2,
+        "jeudi": 3,
+        "vendredi": 4,
+        "samedi": 5,
+        "dimanche": 6,
+    }
+
+    for day_name, target_weekday in weekdays.items():
+
+        # Exemple : "lundi prochain"
+        if f"{day_name} prochain" in query:
+
+            current_weekday = reference_date.weekday()
+
+            days_ahead = target_weekday - current_weekday
+
+            # Si le jour est déjà passé ou aujourd'hui
+            if days_ahead <= 0:
+                days_ahead += 7
+
+            return reference_date + timedelta(days=days_ahead)
+
+        # Exemple : "lundi"
+        elif re.search(rf"\b{day_name}\b", query):
+
+            current_weekday = reference_date.weekday()
+
+            days_ahead = target_weekday - current_weekday
+
+            if days_ahead < 0:
+                days_ahead += 7
+
+            return reference_date + timedelta(days=days_ahead)
+
+    return None
+
 def _parse_query(query: str) -> dict:
+    # 1. Extraction du titre
     summary_match = re.search(
         r'(?:titre|title)\s*[":-]?\s*["“”]?(.+?)(?:"|["“”]|[.,;]|$)',
         query,
         flags=re.IGNORECASE,
     )
+
     summary = summary_match.group(1).strip() if summary_match else query.strip()
 
-    date_match = re.search(
-        r"(\d{4})[-/](\d{2})[-/](\d{2})|(\d{2})[-/](\d{2})[-/](\d{4})",
-        query,
-    )
-    if not date_match:
+    # 2. Résolution de la date
+    ref_date = _get_reference_date()
+    target_date = _resolve_date(query, ref_date)
+
+    # Recherche de date numérique si aucune date textuelle
+    if not target_date:
+        date_match = re.search(
+            r"(\d{4})[-/](\d{2})[-/](\d{2})|(\d{2})[-/](\d{2})[-/](\d{4})",
+            query,
+        )
+
+        if date_match:
+            raw_date = date_match.group(0)
+
+            # Format AAAA-MM-JJ ou AAAA/MM/JJ
+            if date_match.group(1):
+                raw_date = raw_date.replace("/", "-")
+                target_date = date.fromisoformat(raw_date)
+
+            # Format JJ-MM-AAAA ou JJ/MM/AAAA
+            else:
+                for fmt in ("%d-%m-%Y", "%d/%m/%Y"):
+                    try:
+                        target_date = datetime.strptime(raw_date, fmt).date()
+                        break
+                    except ValueError:
+                        pass
+
+    if not target_date:
         raise ValueError("Impossible de trouver la date dans la requête.")
-    if date_match.group(1):
-        year, month, day = date_match.group(1), date_match.group(2), date_match.group(3)
-    else:
-        day, month, year = date_match.group(4), date_match.group(5), date_match.group(6)
 
-    time_match = re.search(r"(\d{1,2})[:h](\d{2})", query, flags=re.IGNORECASE)
-    if not time_match:
-        time_match = re.search(r"\bà\s*(\d{1,2})\b", query, flags=re.IGNORECASE)
-        minute = 0
-        if not time_match:
-            raise ValueError("Impossible de trouver l'heure dans la requête.")
-        hour = int(time_match.group(1))
-    else:
-        hour = int(time_match.group(1))
-        minute = int(time_match.group(2))
+    # 3. Extraction de l'heure
+    hour, minute = 14, 0  # Valeur par défaut
 
-    duration_match = re.search(
-        r"(?:durée|duration)\s*(?:de\s*)?(\d+)\s*(?:minutes?|mins?|mn|min)\b",
+    time_match = re.search(
+        r"(\d{1,2})\s*(?:h|heure|heures)\s*(\d{2})?",
         query,
         flags=re.IGNORECASE,
     )
-    duration_minutes = int(duration_match.group(1)) if duration_match else 30
 
-    start_dt = datetime.strptime(
-        f"{year}-{month}-{day} {hour:02d}:{minute:02d}:00",
-        "%Y-%m-%d %H:%M:%S",
-    )
-    end_dt = start_dt + timedelta(minutes=duration_minutes)
+    if time_match:
+        hour = int(time_match.group(1))
+        minute = int(time_match.group(2)) if time_match.group(2) else 0
+
+    # 4. Construction des datetime
+    start_dt = datetime.combine(
+        target_date,
+        datetime.min.time()
+    ).replace(hour=hour, minute=minute)
+
+    # Durée par défaut = 1 heure
+    end_dt = start_dt + timedelta(hours=1)
+
+    start_datetime = start_dt.isoformat() + "+02:00"
+    end_datetime = end_dt.isoformat() + "+02:00"
 
     return {
         "summary": summary,
-        "start_datetime": start_dt.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "end_datetime": end_dt.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "start_datetime": start_datetime,
+        "end_datetime": end_datetime,
     }
-
 
 @tool
 def create_event(query: str) -> str:
