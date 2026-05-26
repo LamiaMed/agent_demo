@@ -21,3 +21,4 @@ frontend/.turbo/
 # Local build artifacts
 coverage/
 frontend/coverage/
+credentials.b64
