@@ -1,0 +1,7 @@
+[durations]
+"ACTE-01" = { name = "Consultation de suivi standard", duration = 15 }
+"ACTE-02" = { name = "Première consultation / Bilan complet", duration = 60 }
+"ACTE-03" = { name = "Acte technique / Petite chirurgie", duration = 120 }
+"ACTE-04" = { name = "Téléconsultation", duration = 15 }
+"ACTE-05" = { name = "Urgence / Consultation non programmée", duration = 25 }
+"DEFAULT" = { name = "Acte par défaut", duration = 30 }
