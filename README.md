@@ -10,7 +10,7 @@ Si modification, supprimer le fichier : token.json
 "donne moi un rendez vous pour le 28/05/2026 à 11 heure pour ACTE-01"
 "donne moi un rendez vous pour le 28/05/2026 à 10 heure pour ACTE-02"
 "donne moi un rendez vous vendredi prochain à 1 heure pour ACTE-01"
-"voici monaddress francis.garcia81000@gmail.com"
+"voici mon address francis.garcia81000@gmail.com"
 
 
 *** Docker

@@ -14,6 +14,8 @@ from langchain_google_community.calendar.utils import (
 )
 from langchain_google_community._utils import get_google_credentials
 
+from monitor import metrics
+
 BASE_DIR = Path(__file__).resolve().parents[1]
 CREDENTIALS_FILE = BASE_DIR / "credentials.json"
 DEFAULT_TIMEZONE = "UTC"
@@ -122,4 +124,5 @@ def create_event(query: str) -> str:
             },
         },
     ).execute()
+    metrics["nbr_rdv"] += 1
     return f"Event created: {event.get('htmlLink')}"
