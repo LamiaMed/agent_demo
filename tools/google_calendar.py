@@ -1,9 +1,5 @@
 import re
-<<<<<<< HEAD
 import os
-=======
-import sys
->>>>>>> 4d29206 (toolsgmail ajouté)
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -19,25 +15,6 @@ from monitor import metrics
 BASE_DIR = Path(__file__).resolve().parents[1]
 CREDENTIALS_FILE = BASE_DIR / "credentials.json"
 DEFAULT_TIMEZONE = "UTC"
-
-<<<<<<< HEAD
-=======
-# 🔴 CRUCIAL : On ajoute ici le scope Gmail pour que le token généré possède les deux droits.
-SCOPES = [
-    "https://www.googleapis.com/auth/calendar",
-    "https://www.googleapis.com/auth/gmail.send"
-]
-
-try:
-    credentials = get_google_credentials(
-        token_file="token.json",
-        scopes=SCOPES,  # 🟢 Utilise les nouveaux scopes combinés
-        client_secrets_file=str(CREDENTIALS_FILE),
-    )
-except Exception as e:
-    print(f"\n❌ Erreur lors de la connexion avec google calendar: {e}")
-    sys.exit()
->>>>>>> 4d29206 (toolsgmail ajouté)
 
 def _get_calendar_service():
     # Can review scopes here: https://developers.google.com/calendar/api/auth
