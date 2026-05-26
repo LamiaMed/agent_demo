@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 from openai import APIConnectionError, APITimeoutError, OpenAIError
 
 from monitor import get_dashboard, log_request
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
@@ -16,6 +17,15 @@ app = FastAPI(title="Agent Demo API")
 logger = logging.getLogger(__name__)
 chat_request_count = 0
 
+app.add_middleware(
+CORSMiddleware,
+allow_origins=[
+"*"
+],
+allow_credentials=True,
+allow_methods=["*"],
+allow_headers=["*"],
+)
 
 class ChatRequest(BaseModel):
     message: str = Field(..., description="User message to send to the agent.")
