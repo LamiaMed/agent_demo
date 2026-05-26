@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from agent import agent
+from backend.agent import agent
 
 
 def main():
@@ -42,4 +42,8 @@ def main():
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     main()
+=======
+    main()
+>>>>>>> 7d5f79e (project)

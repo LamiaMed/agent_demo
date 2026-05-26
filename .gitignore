@@ -11,3 +11,13 @@ wheels/
 .env
 credentials.json
 token.json
+
+# Node / Next.js
+.next/
+frontend/.next/
+frontend/.vercel/
+frontend/.turbo/
+
+# Local build artifacts
+coverage/
+frontend/coverage/
