@@ -129,3 +129,6 @@ Réponse attendue :
 - Si la requête échoue, vérifier que FastAPI tourne bien sur l'URL configurée
 - Si le backend change de port, mettre à jour `frontend/.env.local`
 
+## Générer la base64
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("credentials.json")) > credentials.b64
+

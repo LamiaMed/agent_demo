@@ -162,10 +162,10 @@ def _parse_query(query: str) -> dict:
 @tool
 def create_event(query: str) -> str:
     """Create a calendar event from a natural-language query."""
-    if os.environ.get("VERCEL"):
-        raise RuntimeError(
-            "Google Calendar tool is not enabled in the Vercel runtime."
-        )
+    # if os.environ.get("VERCEL"):
+    #     raise RuntimeError(
+    #         "Google Calendar tool is not enabled in the Vercel runtime."
+    #     )
 
     details = _parse_query(query)
     api_resource = _get_calendar_service()
