@@ -22,3 +22,5 @@ frontend/.turbo/
 coverage/
 frontend/coverage/
 credentials.b64
+credentials_session.b64
+service_credentials.json

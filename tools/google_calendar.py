@@ -1,16 +1,16 @@
 import base64
+import json
 import re
 import os
-import tempfile
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
+from google.oauth2 import service_account
 from langchain_core.tools import tool
 
 from langchain_google_community.calendar.utils import (
     build_calendar_service,
 )
-from langchain_google_community._utils import get_google_credentials
 
 from monitor import metrics
 
@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_TIMEZONE = "UTC"
 
 
-def _get_client_secrets_file() -> str:
+def _get_service_account_info() -> dict:
     encoded_credentials = os.getenv("GOOGLE_CREDENTIALS_BASE64", "").strip()
     if not encoded_credentials:
         raise RuntimeError(
@@ -26,25 +26,14 @@ def _get_client_secrets_file() -> str:
         )
 
     decoded_credentials = base64.b64decode(encoded_credentials).decode("utf-8")
-
-    with tempfile.NamedTemporaryFile(
-        mode="w",
-        suffix=".json",
-        delete=False,
-        encoding="utf-8",
-    ) as temp_file:
-        temp_file.write(decoded_credentials)
-        return temp_file.name
+    return json.loads(decoded_credentials)
 
 
 def _get_calendar_service():
-    # Can review scopes here: https://developers.google.com/calendar/api/auth
-    # For instance, readonly scope is https://www.googleapis.com/auth/calendar.readonly
-    credentials = get_google_credentials(
-        token_file="token.json",
-        scopes=["https://www.googleapis.com/auth/calendar",
-        "https://www.googleapis.com/auth/gmail.send"],
-        client_secrets_file=_get_client_secrets_file(),
+    creds = _get_service_account_info()
+    credentials = service_account.Credentials.from_service_account_info(
+        creds,
+        scopes=["https://www.googleapis.com/auth/calendar"],
     )
     return build_calendar_service(credentials=credentials)
 

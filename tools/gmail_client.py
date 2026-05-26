@@ -1,19 +1,18 @@
 # tools/gmail_client.py
 import base64
+import json
 import os
-import tempfile
 from email.mime.text import MIMEText
 
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from langchain_core.tools import tool
-from langchain_google_community._utils import get_google_credentials
 
-import tools.google_calendar as cal
-# On importe la nouvelle fonction dédiée
 from tools.clients import get_client_by_email
+import resend
 
-
-def _get_client_secrets_file() -> str:
+resend.api_key = os.environ["RESEND_API_KEY"]
+def _get_service_account_info() -> dict:
     encoded_credentials = os.getenv("GOOGLE_CREDENTIALS_BASE64", "").strip()
     if not encoded_credentials:
         raise RuntimeError(
@@ -21,15 +20,7 @@ def _get_client_secrets_file() -> str:
         )
 
     decoded_credentials = base64.b64decode(encoded_credentials).decode("utf-8")
-
-    with tempfile.NamedTemporaryFile(
-        mode="w",
-        suffix=".json",
-        delete=False,
-        encoding="utf-8",
-    ) as temp_file:
-        temp_file.write(decoded_credentials)
-        return temp_file.name
+    return json.loads(decoded_credentials)
 
 
 @tool
@@ -48,18 +39,13 @@ def send_confirmation_email(to_email: str, date_rdv: str, heure_rdv: str) -> str
         else:
             client_name = "Monsieur/Madame"
 
-        # 2. Vérification des autorisations Google
-        # if not hasattr(cal, 'credentials') or cal.credentials is None:
-        #     return "Erreur : Les autorisations Google ne sont pas initialisées."
-
-        credentials = get_google_credentials(
-            token_file="token.json",
-            scopes=["https://www.googleapis.com/auth/gmail.send"],
-            client_secrets_file=_get_client_secrets_file(),
-        )
-        if credentials is None:
-            return "Erreur : Les autorisations Google ne sont pas initialisées."
-        service = build("gmail", "v1", credentials=credentials)
+        # # 2. Vérification des autorisations Google
+        # credentials_info = _get_service_account_info()
+        # credentials = service_account.Credentials.from_service_account_info(
+        #     credentials_info,
+        #     scopes=["https://www.googleapis.com/auth/gmail.send"],
+        # )
+        # service = build("gmail", "v1", credentials=credentials)
 
         # 3. Personnalisation et structure de l'e-mail
         subject = "Confirmation de votre rendez-vous - Clinique"
@@ -86,7 +72,14 @@ def send_confirmation_email(to_email: str, date_rdv: str, heure_rdv: str) -> str
         raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode("utf-8")
         send_message = {"raw": raw_message}
 
-        service.users().messages().send(userId="me", body=send_message).execute()
+        # service.users().messages().send(userId="me", body=send_message).execute()
+
+        resend.Emails.send({
+            "from": "Clinique <onboarding@resend.dev>",
+            "to": to_email,
+            "subject": "Confirmation de votre rendez-vous - Clinique",
+            "text": body,   # 👈 SAME BODY, just sent as text email
+        })
         return f"E-mail de confirmation envoyé avec succès à {client_name} ({to_email})."
 
     except Exception as e:

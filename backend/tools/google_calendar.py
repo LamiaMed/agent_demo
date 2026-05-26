@@ -1,4 +1,5 @@
 import base64
+import json
 import re
 import os
 import tempfile
@@ -13,6 +14,7 @@ from langchain_google_community.calendar.utils import (
 from langchain_google_community._utils import get_google_credentials
 
 from backend.monitor import metrics
+from google.oauth2 import service_account
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 DEFAULT_TIMEZONE = "UTC"
@@ -37,15 +39,22 @@ def _get_client_secrets_file() -> str:
         return temp_file.name
 
 
+def _get_service_account_info() -> dict:
+    encoded_credentials = os.getenv("GOOGLE_CREDENTIALS_BASE64", "").strip()
+    if not encoded_credentials:
+        raise RuntimeError(
+            "La variable d'environnement GOOGLE_CREDENTIALS_BASE64 n'est pas définie."
+        )
+
+    decoded_credentials = base64.b64decode(encoded_credentials).decode("utf-8")
+    return json.loads(decoded_credentials)
+
+
 def _get_calendar_service():
-    client_secrets_file = _get_client_secrets_file()
-    credentials = get_google_credentials(
-        token_file=str(BASE_DIR / "token.json"),
-        scopes=[
-            "https://www.googleapis.com/auth/calendar",
-            "https://www.googleapis.com/auth/gmail.send",
-        ],
-        client_secrets_file=client_secrets_file,
+    creds = _get_service_account_info()
+    credentials = service_account.Credentials.from_service_account_info(
+        creds,
+        scopes=["https://www.googleapis.com/auth/calendar"],
     )
     return build_calendar_service(credentials=credentials)
 
