@@ -304,7 +304,7 @@ def create_event(query: str) -> str:
     details = _parse_query(query)
     api_resource = _get_calendar_service()
     event = api_resource.events().insert(
-        calendarId="medjahed.lamia4@gmail.com",
+        calendarId=os.getenv("EMAIL_ID"),
         body={
             "summary": details["summary"],
             "start": {
