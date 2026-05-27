@@ -1,15 +1,16 @@
 from functools import lru_cache
 import logging
 import time
-from typing import Any, Dict, List, Optional
+import uuid
+from typing import Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
-from openai import APIConnectionError, APITimeoutError, OpenAIError
-
-from monitor import get_dashboard, log_request
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
+
+from langfuse_tracing import make_langfuse_handler, langfuse_request_trace, shutdown_langfuse
+from monitor import get_dashboard, log_request
 
 load_dotenv()
 
@@ -18,14 +19,13 @@ logger = logging.getLogger(__name__)
 chat_request_count = 0
 
 app.add_middleware(
-CORSMiddleware,
-allow_origins=[
-"*"
-],
-allow_credentials=True,
-allow_methods=["*"],
-allow_headers=["*"],
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 
 class ChatRequest(BaseModel):
     message: str = Field(..., description="User message to send to the agent.")
@@ -56,17 +56,35 @@ def chat(payload: ChatRequest) -> ChatResponse:
     error = None
     tokens_in = 0
     tokens_out = 0
+    session_id = payload.thread_id or str(uuid.uuid4())
+
     try:
-        result = get_agent().invoke({"messages": [payload.message]}, {"configurable": {"thread_id": payload.thread_id}})
-        messages = result["messages"]
-        reply = messages[-1].content if messages else ""
-        if messages:
-            usage_metadata = getattr(messages[-1], "usage_metadata", None)
-            if usage_metadata is None and isinstance(messages[-1], dict):
-                usage_metadata = messages[-1].get("usage_metadata")
-            if usage_metadata:
-                tokens_in = usage_metadata.get("input_tokens", 0)
-                tokens_out = usage_metadata.get("output_tokens", 0)
+        invoke_config = {"configurable": {"thread_id": session_id}}
+        langfuse_handler = make_langfuse_handler()
+        if langfuse_handler is not None:
+            invoke_config["callbacks"] = [langfuse_handler]
+
+        with langfuse_request_trace(
+            name="chat-request",
+            input_data={"message": payload.message},
+            session_id=session_id,
+            tags=["agent-demo", "api"],
+        ) as trace:
+            result = get_agent().invoke({"messages": [payload.message]}, config=invoke_config)
+            messages = result["messages"]
+            reply = messages[-1].content if messages else ""
+
+            if messages:
+                usage_metadata = getattr(messages[-1], "usage_metadata", None)
+                if usage_metadata is None and isinstance(messages[-1], dict):
+                    usage_metadata = messages[-1].get("usage_metadata")
+                if usage_metadata:
+                    tokens_in = usage_metadata.get("input_tokens", 0)
+                    tokens_out = usage_metadata.get("output_tokens", 0)
+
+            if trace is not None:
+                trace.update(output={"reply": reply})
+
         return ChatResponse(reply=reply)
     except Exception as exc:
         error = str(exc)
@@ -76,16 +94,14 @@ def chat(payload: ChatRequest) -> ChatResponse:
         log_request(payload.message, elapsed_ms, tokens_in, tokens_out, error=error)
         logger.info("chat response time: %.2f ms", elapsed_ms)
 
+
 @app.get("/metrics")
 def dashboard():
     metrics = get_dashboard()
     metrics["nbr_requetes_chat"] = chat_request_count
     return metrics
 
-# Résultat :
-# {
-# "total_requetes": 142,
-# "latence_moy_ms": 2340,
-# "taux_erreur": "3.5%",
-# "cout_total": "1.42 $"
-# }
+
+@app.on_event("shutdown")
+def shutdown_tracing() -> None:
+    shutdown_langfuse()
