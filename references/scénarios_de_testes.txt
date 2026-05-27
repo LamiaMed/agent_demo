@@ -4,4 +4,4 @@ Q3 : Je veux un rdv à 10h le 31/05/2026 pour une consultation générale
 Q4 : medjahed.lamia4@gmail.com
 Q5 : la clinique possède-t-elle un parking? 
 Q6 : Comment accéder à la clinique? 
-Q7 : Quels sont les documents à apporter pour une visite médicale ?
+Q7 : Quelle est la liste de documents à ne pas oublier ?
