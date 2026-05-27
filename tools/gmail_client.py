@@ -75,7 +75,7 @@ def send_confirmation_email(to_email: str, date_rdv: str, heure_rdv: str) -> str
         # service.users().messages().send(userId="me", body=send_message).execute()
 
         resend.Emails.send({
-            "from": "Clinique <onboarding@resend.dev>",
+            "from": "Clinique <no-reply-clinique-annecy-fake-domain@resend.dev>",
             "to": to_email,
             "subject": "Confirmation de votre rendez-vous - Clinique",
             "text": body,   # 👈 SAME BODY, just sent as text email

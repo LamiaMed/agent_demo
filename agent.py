@@ -25,4 +25,5 @@ agent = create_agent(
     ],
     system_prompt=SYSTEM_PROMPT,
     checkpointer=InMemorySaver(),
+    debug=True
 )

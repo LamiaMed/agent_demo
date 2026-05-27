@@ -5,15 +5,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        page: "#f6f1ea",
-        ink: "#111827",
-        muted: "#6b7280",
-        panel: "#fffaf4",
-        accent: "#0f766e",
-        accentSoft: "#ccfbf1",
+        page: "#eef5fb",
+        ink: "#0f172a",
+        muted: "#5b7083",
+        panel: "#ffffff",
+        accent: "#0f7490",
+        accentSoft: "#d9f3fb",
+        clinic: "#1f6f8b",
+        clinicDark: "#0b2a3d",
+        clinicMint: "#dff7f5",
       },
       boxShadow: {
-        glow: "0 24px 80px rgba(15, 118, 110, 0.12)",
+        glow: "0 24px 80px rgba(15, 116, 144, 0.16)",
       },
     },
   },

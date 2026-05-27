@@ -63,3 +63,7 @@ Si tu veux en faire un vrai script de démarrage plus tard, on pourra créer un 
 liste en cours : sudo docker ps -a
 detail         : sudo docker inspect mon-agent
 liste image    : sudo docker image ls
+
+
+## lancer les tetss 
+uv run pytest tests/test_google_calendar.py

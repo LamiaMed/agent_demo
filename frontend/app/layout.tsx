@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Space_Grotesk, IBM_Plex_Mono } from "next/font/google";
+import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -15,8 +15,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Agent Demo",
-  description: "Interface frontend Next.js pour interroger l’agent IA.",
+  title: "Clinique Demo",
+  description: "Interface chatbot de clinique pour dialoguer avec l'agent IA.",
 };
 
 export default function RootLayout({

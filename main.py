@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from backend.agent import agent
+from agent import agent
 
 
 def main():

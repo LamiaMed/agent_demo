@@ -8,7 +8,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from backend.monitor import get_dashboard, log_request
+from monitor import get_dashboard, log_request
 
 load_dotenv()
 
@@ -40,7 +40,7 @@ class ChatResponse(BaseModel):
 
 @lru_cache(maxsize=1)
 def get_agent():
-    from backend.agent import agent
+    from agent import agent
 
     return agent
 
